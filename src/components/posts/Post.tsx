@@ -33,3 +33,12 @@ export default function Post({ post }: PostProps) {
     </article>
   );
 }
+
+/**
+ * whitespace-pre-line -> Use whitespace-pre-line to preserve newlines but not spaces within an element.
+ * 
+ * a
+ * b   c    d 
+ * -> a
+ *   bcd
+ */

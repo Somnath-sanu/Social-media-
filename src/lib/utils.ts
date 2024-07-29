@@ -20,3 +20,14 @@ export function formatRelativeDate(from: Date) {
     }
   }
 }
+
+export function formatNumber(n: number): string {
+  return Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+    
+  }).format(n);
+}
+
+//* Intl -> default js api
+//* if used undefind instead of "en-US" , format happen based on user default setting in my case 2.1cr , instead of 2.1M , 
