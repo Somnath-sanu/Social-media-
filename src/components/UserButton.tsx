@@ -20,6 +20,8 @@ import { logout } from "@/actions/logout-action";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 interface UserButtonProps {
   className?: string;
 }
@@ -28,6 +30,10 @@ export default function UserButton({ className }: UserButtonProps) {
   const { user } = useSession();
 
   const { theme, setTheme } = useTheme();
+
+  const queryClient = useQueryClient();
+
+  //queryClient.clear() -> to clear all cached values
 
   return (
     <DropdownMenu>
@@ -76,7 +82,13 @@ export default function UserButton({ className }: UserButtonProps) {
           </DropdownMenuPortal>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => logout()} className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => {
+            queryClient.clear();
+            logout();
+          }}
+          className="cursor-pointer"
+        >
           <LogOutIcon className="mr-2 size-4" />
           Logout
         </DropdownMenuItem>
