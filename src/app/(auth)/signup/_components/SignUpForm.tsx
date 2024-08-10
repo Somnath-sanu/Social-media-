@@ -17,11 +17,14 @@ import { useState, useTransition } from "react";
 import { signUp } from "@/actions/signup-actions";
 import { PasswordInput } from "@/components/PasswordInput";
 import LoadingButton from "@/components/LoadingButton";
+import { PasswordAI } from "@/components/PasswordAI";
 
 export default function SignupForm() {
   const [error, setError] = useState<string>();
 
   const [isPending, startTransition] = useTransition();
+
+  const [password, setPassword] = useState("");
 
   /**
    * if we use [loading , isLoading] , to data successfull ke baad loading false ho jayega, but redirect still will take few seconds to redirect , -> bad user experience , thats why useTranstition();
@@ -36,6 +39,12 @@ export default function SignupForm() {
       password: "",
     },
   });
+
+  const { setValue } = form;
+
+  if (password) {
+    setValue("password", password);
+  }
 
   async function onSubmit(values: SignUpValues) {
     setError(undefined);
@@ -84,7 +93,11 @@ export default function SignupForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder="password" {...field} />
+                <PasswordAI
+                  placeholder="password"
+                  {...field}
+                  setPassword={setPassword}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

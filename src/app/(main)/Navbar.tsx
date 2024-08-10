@@ -7,7 +7,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-10 border-b bg-card shadow-lg">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-5 px-5 py-3">
         <Link href="/" className="text-2xl font-bold text-primary">
-          bugbook
+          CodePeers
         </Link>
         <SearchField />
         <UserButton className="sm:ms-auto" />
