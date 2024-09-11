@@ -20,13 +20,18 @@ export default function SignupPage() {
             </p>
           </div>
           <div className="space-y-5">
-            <SignupForm/>
+            <SignupForm />
             <Link href={"/login"} className="block text-center hover:underline">
               Already have an account? Log in
             </Link>
           </div>
         </div>
-        <img src="/signup-image.jpg" alt="" className="hidden w-1/2 md:block" />
+
+        <img
+          src="/3dAnime.jpeg"
+          alt=""
+          className="hidden w-1/2 overflow-hidden rounded-3xl shadow-sm md:block"
+        />
       </div>
     </main>
   );

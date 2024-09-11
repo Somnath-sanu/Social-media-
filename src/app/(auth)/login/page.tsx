@@ -16,7 +16,7 @@ export default function Page() {
             <h1 className="text-3xl font-bold">Login to codepeers</h1>
           </div>
           <div className="space-y-5">
-          <GoogleSignInButton />
+            <GoogleSignInButton />
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-muted" />
               <span>OR</span>
@@ -28,7 +28,11 @@ export default function Page() {
             </Link>
           </div>
         </div>
-        <img src="/login-image.jpg" alt="" className="hidden w-1/2 md:block" />
+        <img
+          src="/3dAnime.jpeg"
+          alt=""
+          className="hidden w-1/2 overflow-hidden rounded-3xl shadow-sm md:block"
+        />
       </div>
     </main>
   );
