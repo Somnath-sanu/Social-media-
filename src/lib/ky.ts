@@ -16,6 +16,8 @@ export default kyInstance;
  * 
  * ky.create is a method to create a new ky instance with custom configuration. This instance can be used to make HTTP requests with the specified settings.
  * 
+ * parseJson is a custom function provided to ky that uses JSON.parse with a reviver function.
+ * 
  * The parseJson method in the configuration is a way to customize how the response body is parsed when the HTTP response is in JSON format.
  * 
  * JSON.parse is a method used to parse a JSON string into a JavaScript object.

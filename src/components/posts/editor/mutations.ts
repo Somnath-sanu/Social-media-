@@ -29,6 +29,9 @@ export function useSubmitPostMutation() {
           );
         },
       } satisfies QueryFilters;
+
+      //Using satisfies allows you to ensure your object meets the necessary criteria of the type without being overly strict, thus avoiding type errors that could occur with direct type assignment.
+      
       await queryClient.cancelQueries(queryFilter);
 
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(

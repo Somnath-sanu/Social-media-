@@ -22,4 +22,16 @@ export type LoginValues = z.infer<typeof loginSchema>;
 
 export const createPostSchema = z.object({
   content: requiredString,
+  mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
+});
+
+export const updateUserProfileSchema = z.object({
+  displayName: requiredString,
+  bio: z.string().max(1000, "Must be at most 1000 characters"),
+});
+
+export type UpdateUserProfileValues = z.infer<typeof updateUserProfileSchema>;
+
+export const createCommentSchema = z.object({
+  content: requiredString,
 });

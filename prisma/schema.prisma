@@ -27,7 +27,10 @@ model User {
   following    Follow[]  @relation("Following")
   followers    Follow[]  @relation("Followers")
 
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
+  likes     Like[]
+  bookmarks Bookmark[]
+  comments  Comment[]
 
   @@map("users")
 }
@@ -57,7 +60,67 @@ model Post {
   userId  String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
+  createdAt   DateTime   @default(now())
+  attachments Media[]
+  likes       Like[]
+  bookmarks   Bookmark[]
+  comments    Comment[]
 
   @@map("posts")
 }
+
+model Media {
+  id     String    @id @default(cuid())
+  postId String?
+  post   Post?     @relation(fields: [postId], references: [id], onDelete: SetNull)
+  type   MediaType
+  url    String
+
+  createdAt DateTime @default(now())
+
+  @@map("post_media")
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model Like {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("likes")
+}
+
+model Bookmark {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+  @@map("bookmarks")
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+// postId can be undefined , what if user uploaded a postMedia but then decided not to upload it ,
+// if user deleted a post , i dont want the media associated with it also gets deleted , instead i will update the field postId , to null 

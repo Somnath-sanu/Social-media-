@@ -5,6 +5,10 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/toaster";
 import ReactQueryProvider from "./ReactQueryProvider";
 
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { fileRouter } from "@/app/api/uploadthing/core";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,6 +27,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
+
         <ReactQueryProvider>
           <ThemeProvider
             attribute="class"
