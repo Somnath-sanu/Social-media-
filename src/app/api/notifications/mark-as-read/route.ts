@@ -25,3 +25,6 @@ export async function PATCH() {
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+
+//In Next.js, the PATCH route is typically used to partially update a resource on the server. It is different from PUT, which replaces the entire resource. PATCH is useful when you want to update only a few fields of an entity instead of sending the complete data for replacement.

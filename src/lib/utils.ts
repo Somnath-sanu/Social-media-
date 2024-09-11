@@ -28,5 +28,12 @@ export function formatNumber(n: number): string {
   }).format(n);
 }
 
+export function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}
+
 //* Intl -> default js api
 //* if used undefind instead of "en-US" , format happen based on user default setting in my case 2.1cr , instead of 2.1M ,

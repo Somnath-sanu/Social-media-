@@ -1,10 +1,11 @@
 import { validateRequest } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
-import { Bell, Bookmark, Home, Mail } from "lucide-react";
+import streamServerClient from "@/lib/stream";
+import { Bookmark, Home, Mail } from "lucide-react";
 import Link from "next/link";
-import NotificationsButton from "./NotificationsButton";
 import MessagesButton from "./MessagesButton";
+import NotificationsButton from "./NotificationsButton";
 
 interface MenuBarProps {
   className?: string;
@@ -15,22 +16,25 @@ export default async function MenuBar({ className }: MenuBarProps) {
 
   if (!user) return null;
 
-  const unreadNotificationsCount = await prisma.notification.count({
-    where: {
-      recipientId: user.id,
-      read: false,
-    },
-  });
+  const [unreadNotificationsCount] = await Promise.all([
+    prisma.notification.count({
+      where: {
+        recipientId: user.id,
+        read: false,
+      },
+    }),
+    // (await streamServerClient.getUnreadCount(user.id)).total_unread_count
+  ]);
 
   return (
     <div className={className}>
       <Button
-        variant={"ghost"}
+        variant="ghost"
         className="flex items-center justify-start gap-3"
         title="Home"
         asChild
       >
-        <Link href={"/"}>
+        <Link href="/">
           <Home />
           <span className="hidden lg:inline">Home</span>
         </Link>
@@ -39,24 +43,25 @@ export default async function MenuBar({ className }: MenuBarProps) {
         initialState={{ unreadCount: unreadNotificationsCount }}
       />
       {/* <MessagesButton initialState={{ unreadCount: unreadMessagesCount }} /> */}
-      <Button
-        variant={"ghost"}
+
+      {/* <Button
+        variant="ghost"
         className="flex items-center justify-start gap-3"
         title="Messages"
         asChild
       >
-        <Link href={"/messages"}>
+        <Link href="/">
           <Mail />
           <span className="hidden lg:inline">Messages</span>
         </Link>
-      </Button>
+      </Button> */}
       <Button
-        variant={"ghost"}
+        variant="ghost"
         className="flex items-center justify-start gap-3"
         title="Bookmarks"
         asChild
       >
-        <Link href={"/bookmarks"}>
+        <Link href="/bookmarks">
           <Bookmark />
           <span className="hidden lg:inline">Bookmarks</span>
         </Link>

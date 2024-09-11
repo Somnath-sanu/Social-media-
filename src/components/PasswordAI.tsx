@@ -37,6 +37,7 @@ const PasswordAI = React.forwardRef<HTMLInputElement, PasswordProps>(
           //*pe-10 -> so that it wont cross eye icon ,
           ref={ref}
           {...props}
+          disabled = {isPending}
         />
         <button
           type="button"
@@ -52,7 +53,7 @@ const PasswordAI = React.forwardRef<HTMLInputElement, PasswordProps>(
         </button>
         <button
           className="absolute right-11 top-1/2 -translate-y-1/2 transform"
-          title="Generate AI Password"
+          title="Generate Password with the help of AI"
           onClick={genetateAIPassword}
           disabled={isPending}
         >
