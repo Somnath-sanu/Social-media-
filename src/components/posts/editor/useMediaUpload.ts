@@ -17,8 +17,6 @@ export default function useMediaUpload() {
 
   const { startUpload, isUploading } = useUploadThing("attachment", {
     onBeforeUploadBegin(files) {
-      console.log({ files });
-
       const renamedFiles = files.map((file) => {
         const extension = file.name.split(".").pop(); //name: 'certificate-1-100.png',
         return new File(
@@ -28,10 +26,6 @@ export default function useMediaUpload() {
             type: file.type,
           },
         );
-      });
-
-      console.log({
-        renamedFiles,
       });
 
       setAttachments((prev) => [
@@ -46,14 +40,6 @@ export default function useMediaUpload() {
     },
     onUploadProgress: setUploadProgress,
     onClientUploadComplete(res) {
-      console.log({
-        res,
-      });
-
-      console.log({
-        attachments
-      })
-
       setAttachments((prev) =>
         prev.map((a) => {
           const uploadResult = res.find((r) => r.name === a.file.name);
@@ -67,10 +53,6 @@ export default function useMediaUpload() {
           };
         }),
       );
-
-      console.log({
-        attachments
-      })
     },
     onUploadError(e) {
       setAttachments((prev) => prev.filter((a) => !a.isUploading));

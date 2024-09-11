@@ -71,6 +71,10 @@ export default function PostEditor() {
       setAiContent(true);
       setAiQuestion(input.split("@AI")[1]);
     }
+
+    return () => {
+      setAiContent(false);
+    };
   }, [input]);
 
   function onSubmit() {
