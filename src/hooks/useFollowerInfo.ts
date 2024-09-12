@@ -17,6 +17,3 @@ export default function useFollowerInfo(
   return query;
 }
 
-/**
- * queryKey: ["follower-info", userId] -> becz each follower id has different followerInfo , and same key will overwrite each other
- */

@@ -165,19 +165,3 @@ function CommentButton({ post, onClick }: CommentButtonProps) {
   );
 }
 
-/**
- * whitespace-pre-line -> Use whitespace-pre-line to preserve newlines but not spaces within an element.
- *
- * a
- * b   c    d
- * -> a
- *   bcd
- */
-/** fetch convert date to json i.e string as a response from
-/api/posts/for-you , so from.getTime() is not a function error , so
-we used ky
-
-group/name -> group/post
-
-attachments -> media[] , media from db , we can directly takes types from db using prisma
-*/

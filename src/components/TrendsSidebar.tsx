@@ -5,12 +5,13 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import UserAvatar from "./UserAvatar";
-import { Button } from "./ui/button";
+
 import { unstable_cache } from "next/cache";
 import { formatNumber } from "@/lib/utils";
 import FollowButton from "./FollowButton";
 import { getUserDataSelect } from "@/lib/types";
 import UserTooltip from "./UserTooltip";
+import { CodingNews } from "./News/CodingNews";
 
 export default function TrendsSidebar() {
   return (
@@ -18,6 +19,7 @@ export default function TrendsSidebar() {
       <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
         <WhoTOFollow />
         <TrendingTopics />
+        <CodingNews/>
       </Suspense>
     </div>
   );

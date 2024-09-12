@@ -68,17 +68,3 @@ export default function ForYouFeed() {
     </InfiniteScrollContainer>
   );
 }
-
-/**
- * async () => {
-      const res = await fetch("/api/posts/for-you");
-      if (!res.ok) {
-        throw Error(`Request failed with status code ${res.status}`);
-      }
-
-      return res.json();
-    },
- */
-/**
- * While throw Error is a valid shorthand and works just as well, using throw new Error is generally preferred for its clarity and consistency in code. Both will achieve the same result, but explicit instantiation with new can make your code more understandable and maintainable.
- */

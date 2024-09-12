@@ -45,10 +45,3 @@ export default function RootLayout({
   );
 }
 
-//* Dynamic Page Titles
-/**
- * The template string "%s | bugbook" provides a structured format for generating the <title> tag of your web pages dynamically.
- * %s acts as a placeholder that can be replaced with actual content specific to each page.
- * The default property ("bugbook") provides a fallback title in case the dynamic content for %s is not provided or available. This ensures that every page has a consistent base title if no specific title is defined.
- *
- */

@@ -52,9 +52,3 @@ export const UserLinkWithTooltip = ({
     </UserTooltip>
   );
 };
-/**
- * by default , react-query retries a query if it fails , but what if username does not exist , by default retries for 3 times,
- * if its not http error we will retry for 3 times and then stop
- *
- * ? staleTime: Infinity, -> we dont need to fetch it all the time , we want only once
- */
