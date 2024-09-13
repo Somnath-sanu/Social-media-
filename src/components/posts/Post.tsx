@@ -26,6 +26,10 @@ export default function Post({ post }: PostProps) {
 
   const [showComments, setShowComments] = useState(false);
 
+  const authUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME;
+  const admins = authUsername?.split(" ");
+  const isAdmin = admins?.some((admin) => admin === user.username)!;
+
   return (
     <article className="group/post space-y-3 rounded-2xl border-b-2 bg-card p-5 shadow-sm">
       <div className="flex justify-between gap-3">
@@ -55,10 +59,11 @@ export default function Post({ post }: PostProps) {
             </Link>
           </div>
         </div>
-        {post.user.id === user.id && (
+        {(post.user.id === user.id || isAdmin) && (
           <PostMoreButton
             post={post}
             className="opacity-0 transition-opacity group-hover/post:opacity-100"
+            isAdmin={isAdmin}
           />
         )}
       </div>
@@ -164,4 +169,3 @@ function CommentButton({ post, onClick }: CommentButtonProps) {
     </button>
   );
 }
-

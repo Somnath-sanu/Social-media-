@@ -146,6 +146,7 @@ enum NotificationType {
   LIKE
   FOLLOW
   COMMENT
+  MENTION
 }
 
 // postId can be undefined , what if user uploaded a postMedia but then decided not to upload it ,

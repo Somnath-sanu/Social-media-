@@ -11,7 +11,6 @@ import { formatNumber } from "@/lib/utils";
 import FollowButton from "./FollowButton";
 import { getUserDataSelect } from "@/lib/types";
 import UserTooltip from "./UserTooltip";
-import { CodingNews } from "./News/CodingNews";
 
 export default function TrendsSidebar() {
   return (
@@ -19,7 +18,6 @@ export default function TrendsSidebar() {
       <Suspense fallback={<Loader2 className="mx-auto animate-spin" />}>
         <WhoTOFollow />
         <TrendingTopics />
-        <CodingNews/>
       </Suspense>
     </div>
   );

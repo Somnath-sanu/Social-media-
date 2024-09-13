@@ -15,12 +15,14 @@ interface DeletePostDialogProps {
   post: PostData;
   open: boolean;
   onClose: () => void;
+  isAdmin: boolean;
 }
 
 export default function DeletePostDialog({
   post,
   open,
   onClose,
+  isAdmin,
 }: DeletePostDialogProps) {
   const mutation = useDeletePostMutation();
 
@@ -43,7 +45,12 @@ export default function DeletePostDialog({
         <DialogFooter>
           <LoadingButton
             variant={"destructive"}
-            onClick={() => mutation.mutate(post.id, { onSuccess: onClose })}
+            onClick={() =>
+              mutation.mutate(
+                { id: post.id, isAdmin },
+                { onSuccess: onClose, onError: onClose },
+              )
+            }
             loading={mutation.isPending}
           >
             Delete

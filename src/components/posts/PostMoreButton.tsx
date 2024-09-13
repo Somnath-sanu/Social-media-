@@ -8,11 +8,13 @@ import { MoreHorizontal, Trash2 } from "lucide-react";
 interface PostMoreButtonProps {
   post: PostData;
   className?: string;
+  isAdmin: boolean;
 }
 
 export default function PostMoreButton({
   post,
   className,
+  isAdmin
 }: PostMoreButtonProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -38,6 +40,7 @@ export default function PostMoreButton({
         post={post}
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
+        isAdmin={isAdmin}
       />
     </>
   );
