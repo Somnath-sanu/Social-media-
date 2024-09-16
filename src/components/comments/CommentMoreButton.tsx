@@ -13,11 +13,13 @@ import DeleteCommentDialog from "./DeleteCommentDialog";
 interface CommentMoreButtonProps {
   comment: CommentData;
   className?: string;
+  isAdmin: boolean;
 }
 
 export default function CommentMoreButton({
   comment,
   className,
+  isAdmin,
 }: CommentMoreButtonProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
@@ -42,6 +44,7 @@ export default function CommentMoreButton({
         comment={comment}
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
+        isAdmin={isAdmin}
       />
     </>
   );

@@ -13,6 +13,10 @@ interface CommentProps {
 export default function Comment({ comment }: CommentProps) {
   const { user } = useSession();
 
+  const authUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME;
+  const admins = authUsername?.split(" ");
+  const isAdmin = admins?.some((admin) => admin === user.username)!;
+
   return (
     <div className="group/comment flex gap-3 py-3">
       <span className="hidden sm:inline">
@@ -38,10 +42,11 @@ export default function Comment({ comment }: CommentProps) {
         </div>
         <div>{comment.content}</div>
       </div>
-      {comment.user.id === user.id && (
+      {(comment.user.id === user.id || isAdmin) && (
         <CommentMoreButton
           comment={comment}
-          className="ms-auto opacity-0 transition-opacity group-hover/comment:opacity-100"
+          className="ms-auto opacity-50 transition-opacity sm:opacity-0 sm:group-hover/comment:opacity-100"
+          isAdmin={isAdmin}
         />
       )}
     </div>

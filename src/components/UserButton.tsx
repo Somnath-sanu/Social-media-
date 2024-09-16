@@ -15,12 +15,23 @@ import {
 } from "./ui/dropdown-menu";
 import UserAvatar from "./UserAvatar";
 import Link from "next/link";
-import { Check, LogOutIcon, Monitor, Moon, Sun, UserIcon } from "lucide-react";
+import {
+  Check,
+  Heart,
+  LogOutIcon,
+  MessageCircle,
+  Monitor,
+  Moon,
+  SquareActivity,
+  Sun,
+  UserIcon,
+} from "lucide-react";
 import { logout } from "@/actions/logout-action";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
 
 interface UserButtonProps {
   className?: string;
@@ -30,6 +41,8 @@ export default function UserButton({ className }: UserButtonProps) {
   const { user } = useSession();
 
   const { theme, setTheme } = useTheme();
+
+  const pathname = usePathname();
 
   const queryClient = useQueryClient();
 
@@ -56,6 +69,32 @@ export default function UserButton({ className }: UserButtonProps) {
             Profile
           </DropdownMenuItem>
         </Link>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <SquareActivity className="mr-2 size-4" />
+            Activity
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <Link href={`/likes`}>
+                <DropdownMenuItem onClick={() => setTheme("system")}>
+                  <Heart className="mr-2 size-4" />
+                  Likes
+                  {pathname === "/likes" && <Check className="ms-2 size-4" />}
+                </DropdownMenuItem>
+              </Link>
+              <Link href={`/comments`}>
+                <DropdownMenuItem>
+                  <MessageCircle className="mr-2 size-4" />
+                  Comments
+                  {pathname === "/comments" && (
+                    <Check className="ms-2 size-4" />
+                  )}
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>
             <Monitor className="mr-2 size-4" />

@@ -44,8 +44,10 @@ export async function submitComment({
   return newComment;
 }
 
-export async function deleteComment(id: string) {
+export async function deleteComment(input: { id: string; isAdmin: boolean }) {
   const { user } = await validateRequest();
+
+  const { id, isAdmin = false } = input;
 
   if (!user) throw new Error("Unauthorized");
 
@@ -55,7 +57,9 @@ export async function deleteComment(id: string) {
 
   if (!comment) throw new Error("Comment not found");
 
-  if (comment.userId !== user.id) throw new Error("Unauthorized");
+  if (!isAdmin) {
+    if (comment.userId !== user.id) throw new Error("Unauthorized");
+  }
 
   const deletedComment = await prisma.comment.delete({
     where: { id },

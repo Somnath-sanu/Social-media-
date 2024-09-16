@@ -15,12 +15,14 @@ interface DeleteCommentDialogProps {
   comment: CommentData;
   open: boolean;
   onClose: () => void;
+  isAdmin: boolean;
 }
 
 export default function DeleteCommentDialog({
   comment,
   open,
   onClose,
+  isAdmin,
 }: DeleteCommentDialogProps) {
   const mutation = useDeleteCommentMutation();
 
@@ -43,7 +45,12 @@ export default function DeleteCommentDialog({
         <DialogFooter>
           <LoadingButton
             variant="destructive"
-            onClick={() => mutation.mutate(comment.id, { onSuccess: onClose })}
+            onClick={() =>
+              mutation.mutate(
+                { id: comment.id, isAdmin },
+                { onSuccess: onClose },
+              )
+            }
             loading={mutation.isPending}
           >
             Delete

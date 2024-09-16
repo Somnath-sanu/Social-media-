@@ -1,4 +1,4 @@
-import { LikeInfo } from "@/lib/types";
+import { LikeInfo, PostsPage } from "@/lib/types";
 import { useToast } from "../ui/use-toast";
 import {
   QueryKey,
@@ -55,6 +55,14 @@ export default function LikeButton({ postId, initialState }: LikeButtonProps) {
       toast({
         variant: "destructive",
         description: "Something went wrong. Please try again.",
+      });
+    },
+    onSuccess: async () => {
+      //TODO: if user liked 1000 posts and unliked one we are invalidating (making db call to get 999 liked posts again so if we get more users , remove this , make this like bookmarked)
+
+      const likeQueryKey: QueryKey = ["post-feed", "likes"];
+      queryClient.invalidateQueries({
+        queryKey: likeQueryKey,
       });
     },
   });
