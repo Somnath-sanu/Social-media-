@@ -4,6 +4,9 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 
+import CharacterCount from "@tiptap/extension-character-count";
+
+
 import { useSession } from "@/app/(main)/SessionProvider";
 import UserAvatar from "@/components/UserAvatar";
 
@@ -26,6 +29,8 @@ export default function PostEditor() {
   const [aiContent, setAiContent] = useState(false);
   const [aiQuestion, setAiQuestion] = useState<string>("");
   const [aiResultPending, setAiResultPending] = useState<boolean>(false);
+
+  const limit = 280;
 
   const mutation = useSubmitPostMutation();
 
@@ -58,6 +63,10 @@ export default function PostEditor() {
       Placeholder.configure({
         placeholder: "What's new and exciting?",
       }),
+      CharacterCount.configure({
+        limit,
+      }),
+      
     ],
   });
 
@@ -65,6 +74,10 @@ export default function PostEditor() {
     editor?.getText({
       blockSeparator: "\n",
     }) || "";
+
+  const percentage = editor
+    ? Math.round((100 / limit) * editor.storage.characterCount.characters())
+    : 0;
 
   useEffect(() => {
     if (input.startsWith("@AI")) {
@@ -127,11 +140,11 @@ export default function PostEditor() {
     <div className="flex flex-col gap-5 rounded-2xl border-b bg-card p-5 shadow-sm">
       <div className="flex gap-5">
         <UserAvatar avatarUrl={user.avatarUrl} className="hidden sm:inline" />
-        <div {...rootProps} className="w-full">
+        <div {...rootProps} className="w-full overflow-x-auto">
           <EditorContent
             editor={editor}
             className={cn(
-              "max-h-[20rem] w-full max-w-[840px] overflow-hidden overflow-y-auto rounded-2xl bg-gray-100 px-5 py-3 font-mono text-black",
+              "max-h-[20rem] w-full max-w-[800px] resize-none overflow-hidden overflow-y-auto rounded-2xl border bg-gray-100 px-5 py-3 font-mono text-black",
               isDragActive && "outline-dashed dark:outline-white",
             )}
             onPaste={onPaste}
@@ -146,6 +159,24 @@ export default function PostEditor() {
         />
       )}
       <div className="flex items-center justify-end gap-3">
+        <div
+          className={`character-count ${editor?.storage.characterCount.characters() === limit ? "character-count--warning" : ""}`}
+        >
+          <svg height="20" width="20" viewBox="0 0 20 20">
+            <circle r="10" cx="10" cy="10" fill="#e9ecef" />
+            <circle
+              r="5"
+              cx="10"
+              cy="10"
+              fill="transparent"
+              stroke={`${percentage < 90 ? "blue" : "red"}`}
+              strokeWidth="10"
+              strokeDasharray={`calc(${percentage} * 31.4 / 100) 31.4`}
+              transform="rotate(-90) translate(-20)"
+            />
+            <circle r="6" cx="10" cy="10" fill="white" />
+          </svg>
+        </div>
         {isUploading && (
           <>
             <span className="text-sm">{uploadProgress ?? 0}%</span>

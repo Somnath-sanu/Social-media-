@@ -21,7 +21,11 @@ export const loginSchema = z.object({
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export const createPostSchema = z.object({
-  content: requiredString,
+  content: z
+    .string()
+    .trim()
+    .min(1, "Required")
+    .max(280, "Maximum 5 characters allowed"),
   mediaIds: z.array(z.string()).max(5, "Cannot have more than 5 attachments"),
 });
 
