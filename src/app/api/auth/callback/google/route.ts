@@ -1,6 +1,6 @@
 import { google, lucia } from "@/auth";
 import kyInstance from "@/lib/ky";
-import {prisma} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import streamServerClient from "@/lib/stream";
 import { slugify } from "@/lib/utils";
 import { OAuth2RequestError } from "arctic";
@@ -9,19 +9,13 @@ import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const code = req.nextUrl.searchParams.get("code");
-  const state = req.nextUrl.searchParams.get("state");
+  const code = req.nextUrl.searchParams.get("code") as string;
+  const state = req.nextUrl.searchParams.get("state") as string;
 
   const storedState = cookies().get("state")?.value;
   const storedCodeVerifier = cookies().get("code_verifier")?.value;
 
-  if (
-    !code ||
-    !state ||
-    !storedState ||
-    !storedCodeVerifier ||
-    state !== storedState
-  ) {
+  if (!storedCodeVerifier) {
     return new Response(null, { status: 400 });
   }
 
