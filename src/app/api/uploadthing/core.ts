@@ -1,5 +1,6 @@
 import { validateRequest } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import streamServerClient from "@/lib/stream";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError, UTApi } from "uploadthing/server";
 
@@ -42,23 +43,29 @@ export const fileRouter = {
        * default url file.url is public , can be accessed by anyone , so we have to create our own application based url
        */
 
-      await prisma.user.update({
-        where: {
+      await Promise.all([
+        prisma.user.update({
+          where: { id: metadata.user.id },
+          data: {
+            avatarUrl: newAvatarUrl,
+          },
+        }),
+        streamServerClient.partialUpdateUser({
           id: metadata.user.id,
-        },
-        data: {
-          avatarUrl: newAvatarUrl,
-        },
-      });
+          set: {
+            image: newAvatarUrl,
+          },
+        }),
+      ]);
 
       //!!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+
       return { avatarUrl: newAvatarUrl };
     }),
 
   attachment: f({
     image: { maxFileSize: "4MB", maxFileCount: 5 },
     video: { maxFileSize: "16MB", maxFileCount: 5 },
-    
   })
     .middleware(async () => {
       const { user } = await validateRequest();

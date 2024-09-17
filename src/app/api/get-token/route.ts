@@ -5,13 +5,13 @@ export async function GET() {
   try {
     const { user } = await validateRequest();
 
-    console.log("Calling get-token for user: ", user?.id);
+    // console.log("Calling get-token for user: ", user?.id);
 
     if (!user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60;
+    const expirationTime = Math.floor(Date.now() / 1000) + 60 * 60; // 1 hour
 
     const issuedAt = Math.floor(Date.now() / 1000) - 60;
 

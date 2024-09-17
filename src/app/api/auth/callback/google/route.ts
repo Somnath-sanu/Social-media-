@@ -15,9 +15,19 @@ export async function GET(req: NextRequest) {
   const storedState = cookies().get("state")?.value;
   const storedCodeVerifier = cookies().get("code_verifier")?.value;
 
-  if (!storedCodeVerifier) {
+  if (
+    !code ||
+    !state ||
+    !storedState ||
+    !storedCodeVerifier ||
+    state !== storedState
+  ) {
     return new Response(null, { status: 400 });
   }
+
+  // if (!storedCodeVerifier) {
+  //   return new Response(null, { status: 400 });
+  // }
 
   try {
     const tokens = await google.validateAuthorizationCode(
@@ -68,11 +78,11 @@ export async function GET(req: NextRequest) {
           googleId: googleUser.id,
         },
       });
-      // await streamServerClient.upsertUser({
-      //   id: userId,
-      //   username,
-      //   name: username,
-      // });
+      await streamServerClient.upsertUser({
+        id: userId,
+        username,
+        name: username,
+      });
     });
 
     const session = await lucia.createSession(userId, {});

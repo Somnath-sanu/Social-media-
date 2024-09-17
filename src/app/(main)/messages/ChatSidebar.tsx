@@ -46,7 +46,7 @@ export default function ChatSidebar({ open, onClose }: ChatSidebarProps) {
   return (
     <div
       className={cn(
-        "size-full flex-col border-e md:flex md:w-72",
+        "size-full flex-col border-e border-s md:flex md:w-72",
         open ? "flex" : "hidden",
       )}
     >
