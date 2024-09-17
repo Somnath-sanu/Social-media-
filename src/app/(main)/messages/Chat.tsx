@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Chat as StreamChat } from "stream-chat-react";
 import ChatChannel from "./ChatChannel";
 import ChatSidebar from "./ChatSidebar";
@@ -14,6 +14,14 @@ export default function Chat() {
   const { resolvedTheme } = useTheme();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(true);
+
+  useEffect(() => {
+    // Automatically open the sidebar for user to select a chat for the first time
+    if (isFirstTime) {
+      setSidebarOpen(true);
+    }
+  }, [isFirstTime]);
 
   if (!chatClient) {
     return <Loader2 className="mx-auto my-3 animate-spin" />;
@@ -32,7 +40,10 @@ export default function Chat() {
         >
           <ChatSidebar
             open={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
+            onClose={() => {
+              setSidebarOpen(false);
+              setIsFirstTime(false);
+            }}
           />
           <ChatChannel
             open={!sidebarOpen}

@@ -126,11 +126,7 @@ export default function NewChatDialog({
                   user={user}
                   selected={selectedUsers.some((u) => u.id === user.id)}
                   onClick={() => {
-                    setSelectedUsers((prev) =>
-                      prev.some((u) => u.id === user.id)
-                        ? prev.filter((u) => u.id !== user.id)
-                        : [...prev, user],
-                    );
+                    setSelectedUsers([user]);
                   }}
                 />
               ))}
