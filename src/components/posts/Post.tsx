@@ -16,6 +16,7 @@ import BookmarkButton from "./BookmarkButton";
 import { useState } from "react";
 import { MessageSquare } from "lucide-react";
 import Comments from "../comments/Comments";
+import ShareButton from "./ShareButton";
 
 interface PostProps {
   post: PostData;
@@ -62,7 +63,7 @@ export default function Post({ post }: PostProps) {
         {(post.user.id === user.id || isAdmin) && (
           <PostMoreButton
             post={post}
-            className="opacity-100 transition-opacity sm:group-hover/post:opacity-100 sm:opacity-0"
+            className="opacity-100 transition-opacity sm:opacity-0 sm:group-hover/post:opacity-100"
             isAdmin={isAdmin}
           />
         )}
@@ -88,14 +89,17 @@ export default function Post({ post }: PostProps) {
             onClick={() => setShowComments(!showComments)}
           />
         </div>
-        <BookmarkButton
-          postId={post.id}
-          initialState={{
-            isBookmarkedByUser: post.bookmarks.some(
-              (bookmark) => bookmark.userId === user.id,
-            ),
-          }}
-        />
+        <div className="flex gap-3">
+          <BookmarkButton
+            postId={post.id}
+            initialState={{
+              isBookmarkedByUser: post.bookmarks.some(
+                (bookmark) => bookmark.userId === user.id,
+              ),
+            }}
+          />
+          <ShareButton post={post} />
+        </div>
       </div>
       {showComments && <Comments post={post} />}
     </article>

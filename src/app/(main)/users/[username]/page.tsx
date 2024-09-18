@@ -37,6 +37,43 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
   return user;
 });
 
+const getFollower = cache(async (id: string) => {
+  const getFollower = await prisma.user.findMany({
+    where: {
+      id,
+    },
+    select: {
+      followers: {
+        where: {
+          followerId: {
+            not: id,
+          },
+        },
+        select: {
+          followerId: true,
+        },
+      },
+    },
+  });
+
+  const getFollowerDetails = await prisma.user.findMany({
+    where: {
+      id: {
+        in: getFollower.flatMap((user) =>
+          user.followers.map((f) => f.followerId),
+        ),
+      },
+    },
+    select: {
+      username: true,
+      displayName: true,
+      avatarUrl: true,
+    },
+  });
+
+  return getFollowerDetails;
+});
+
 export async function generateMetadata({
   params: { username },
 }: PageProps): Promise<Metadata> {
@@ -92,6 +129,8 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
     ),
   };
 
+  const allFollowers = await getFollower(user.id);
+
   return (
     <div className="h-fit w-full space-y-5 rounded-2xl bg-card p-5 shadow-sm">
       <UserAvatar
@@ -114,7 +153,11 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
                 {formatNumber(user._count.posts)}{" "}
               </span>
             </span>
-            <FollowerCount userId={user.id} initialState={followerInfo} />
+            <FollowerCount
+              userId={user.id}
+              initialState={followerInfo}
+              followers={allFollowers}
+            />
           </div>
         </div>
         {user.id === loggedInUserId ? (
