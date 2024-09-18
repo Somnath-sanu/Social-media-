@@ -30,7 +30,7 @@ export default function ShareButton({ post }: { post: PostData }) {
           <DropdownMenuItem
             onClick={async () => {
               await navigator.clipboard.writeText(
-                `${window.location.href}posts/${post.id}`,
+                `${window.location.origin}posts/${post.id}`,
               );
               toast({
                 description: "Copied to clipboard",
