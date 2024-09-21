@@ -6,29 +6,40 @@ import Placeholder from "@tiptap/extension-placeholder";
 
 import CharacterCount from "@tiptap/extension-character-count";
 
-
 import { useSession } from "@/app/(main)/SessionProvider";
 import UserAvatar from "@/components/UserAvatar";
 
 import "./styles.css";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 import { useSubmitPostMutation } from "./mutations";
 import LoadingButton from "@/components/LoadingButton";
 import { model } from "@/components/AI/AiModel";
-import { useToast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/components/ui/use-toast";
 import useMediaUpload, { Attachment } from "./useMediaUpload";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, Loader2, X } from "lucide-react";
+import { BotMessageSquare, Copy, ImageIcon, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useDropzone } from "@uploadthing/react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { Textarea } from "@/components/ui/textarea";
 
 export default function PostEditor() {
   const { user } = useSession();
-  const [aiContent, setAiContent] = useState(false);
+  const [aiContent, setAiContent] = useState("");
   const [aiQuestion, setAiQuestion] = useState<string>("");
   const [aiResultPending, setAiResultPending] = useState<boolean>(false);
+
+  const [outputImg, setOutputImg] = useState<string | null>(null);
 
   const limit = 280;
 
@@ -52,7 +63,9 @@ export default function PostEditor() {
   const { onClick, ...rootProps } = getRootProps();
 
   const customPrompt =
-    "You are an AI assistant specialized in computer science and technology. Your role is to answer user questions about computer-related topics, such as programming languages (e.g., MERN stack), cloud computing (e.g., AWS), DevOps practices, computer architecture,data storage , blockchain,etc. Your responses should be informative, concise, and limited to 60-70 words.If the users question is not about these topics or involves personal, sensitive, or inappropriate content, respond with a polite and friendly message indicating that the question is not valid. For example: 'I'm here to help with questions related to computer science and technology. Please ask about topics like programming, cloud computing, or computer systems. For other queries, consider reaching out to the appropriate resources.'";
+    "You are an AI assistant specialized in computer science and technology. Your role is to answer user questions about computer-related topics, such as programming languages (e.g., MERN stack), cloud computing (e.g., AWS), DevOps practices, computer architecture,data storage , blockchain,etc. Your responses should be informative, concise, and limited to 60-70 words.If the users question is not about these topics or involves personal, sensitive, or inappropriate content, respond with a polite and friendly message indicating that the question is not valid. For example: 'I'm here to help with questions related to computer science and technology. Please ask about topics like programming, cloud computing, or computer systems. For other queries, consider reaching out to the appropriate resources.' Answer any technology questions except the one i already mensioned above . Now just answer the question i am giving you now ->";
+
+  const imageUrl = `https://image.pollinations.ai/prompt/${outputImg}?model=flux&width=1280&height=720&seed=42&nologo=true&enhance=true`;
 
   const editor = useEditor({
     extensions: [
@@ -66,7 +79,6 @@ export default function PostEditor() {
       CharacterCount.configure({
         limit,
       }),
-      
     ],
   });
 
@@ -79,16 +91,7 @@ export default function PostEditor() {
     ? Math.round((100 / limit) * editor.storage.characterCount.characters())
     : 0;
 
-  useEffect(() => {
-    if (input.startsWith("@AI")) {
-      setAiContent(true);
-      setAiQuestion(input.split("@AI")[1]);
-    }
-
-    return () => {
-      setAiContent(false);
-    };
-  }, [input]);
+  //TODO: Mention users list
 
   function onSubmit() {
     mutation.mutate(
@@ -106,20 +109,18 @@ export default function PostEditor() {
   }
 
   async function getAIResult() {
-    if (!aiQuestion.trim()) {
-      toast({
-        description: "Invalid Question",
-        variant: "destructive",
-      });
+    if (aiQuestion.startsWith("/generate")) {
+      const prompt = aiQuestion.split("/generate")[1];
+
+      setOutputImg(encodeURIComponent(prompt));
+
       return;
     }
-
     try {
       setAiResultPending(true);
       const result = await model.generateContent(customPrompt + aiQuestion);
 
-      editor?.commands.setContent(result.response.text());
-      setAiContent(false);
+      setAiContent(result.response.text());
     } catch (error) {
       console.log("Error generating AI content :", error);
     } finally {
@@ -133,6 +134,11 @@ export default function PostEditor() {
       .filter((item) => item.kind === "file")
       //@ts-ignore
       .map((item) => item.getAsFile()) as File[];
+
+    // console.log({
+    //   files
+    // });
+
     startUpload(files);
   }
 
@@ -177,6 +183,21 @@ export default function PostEditor() {
             <circle r="6" cx="10" cy="10" fill="white" />
           </svg>
         </div>
+        <div title="Ask AI" className="">
+          <AskAiDialog
+            aiContent={aiContent}
+            aiResultPending={aiResultPending}
+            getAIResult={getAIResult}
+            setAiQuestion={setAiQuestion}
+            setAiContent={setAiContent}
+            aiQuestion={aiQuestion}
+            outputImg={outputImg}
+            setOutputImg={setOutputImg}
+            imageUrl={imageUrl}
+          >
+            <BotMessageSquare className="size-5 cursor-pointer hover:text-neutral-400" />
+          </AskAiDialog>
+        </div>
         {isUploading && (
           <>
             <span className="text-sm">{uploadProgress ?? 0}%</span>
@@ -187,25 +208,15 @@ export default function PostEditor() {
           onFilesSelected={startUpload}
           disabled={isUploading || attachments.length >= 5}
         />
-        {aiContent ? (
-          <LoadingButton
-            onClick={getAIResult}
-            disabled={!input.trim()}
-            className="min-w-20"
-            loading={aiResultPending}
-          >
-            Get AI result
-          </LoadingButton>
-        ) : (
-          <LoadingButton
-            onClick={onSubmit}
-            disabled={!input.trim() || isUploading}
-            className="min-w-20"
-            loading={mutation.isPending}
-          >
-            Post
-          </LoadingButton>
-        )}
+
+        <LoadingButton
+          onClick={onSubmit}
+          disabled={!input.trim() || isUploading}
+          className="min-w-20"
+          loading={mutation.isPending}
+        >
+          Post
+        </LoadingButton>
       </div>
     </div>
   );
@@ -336,3 +347,98 @@ function AttachmentPreview({
 /**
  * if we pass src with video tag,it will reload the video everytime the component re-render
  */
+
+function AskAiDialog({
+  children,
+  aiResultPending,
+  aiContent,
+  getAIResult,
+  setAiQuestion,
+  setAiContent,
+  aiQuestion,
+  outputImg,
+  setOutputImg,
+  imageUrl,
+}: {
+  children: React.ReactNode;
+  aiResultPending: boolean;
+  aiContent: string;
+  aiQuestion: string;
+  getAIResult: () => void;
+  setAiQuestion: Dispatch<SetStateAction<string>>;
+  setAiContent: Dispatch<SetStateAction<string>>;
+  outputImg: string | null;
+  setOutputImg: Dispatch<SetStateAction<string | null>>;
+  imageUrl: string;
+}) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Ask AI 🤖 OR Generate image 📸</DialogTitle>
+          <DialogDescription>
+            Right click,copy image and paste it in the post input to post
+            generated image
+          </DialogDescription>
+        </DialogHeader>
+        <Copy
+          className="size-4 cursor-pointer hover:text-neutral-300"
+          onClick={async () => {
+            if (!!aiContent) {
+              await navigator.clipboard.writeText(aiContent);
+              toast({
+                description: "Answer copied 🙌",
+              });
+            }
+          }}
+        />
+        <div className="flex flex-col items-center gap-4">
+          <Textarea
+            placeholder="start with /generate to generate image : )"
+            value={aiContent || aiQuestion}
+            onChange={(e) => setAiQuestion(e.target.value)}
+            className="resize-none"
+            rows={4}
+            disabled={!!aiContent && true}
+            required
+            minLength={5}
+          />
+          {!!outputImg && (
+            <Image
+              src={imageUrl}
+              alt=""
+              width={250}
+              height={150}
+              className="rounded-xl"
+            />
+          )}
+
+          {!!aiContent || !!outputImg ? (
+            <Button
+              className="min-w-20"
+              onClick={() => {
+                setAiContent("");
+                setAiQuestion("");
+                setOutputImg(null);
+              }}
+            >
+              Ask again
+            </Button>
+          ) : (
+            <LoadingButton
+              onClick={() => {
+                getAIResult();
+              }}
+              disabled={aiResultPending || !aiQuestion.trim()}
+              className="min-w-20"
+              loading={aiResultPending}
+            >
+              Ask AI
+            </LoadingButton>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
