@@ -1,38 +1,60 @@
 import { Metadata } from "next";
-
 import Link from "next/link";
+import AuthPageLayout from "@/components/auth/AuthPageLayout";
 import SignupForm from "./_components/SignUpForm";
 
 export const metadata: Metadata = {
   title: "Sign Up",
 };
 
+const GLOW_CITY_IMAGE =
+  "https://images.unsplash.com/photo-1774979300738-5c8c05e1db6b?auto=format&w=800&q=80&fit=crop";
+
+const HEART_ICON =
+  "https://cdn.jsdelivr.net/npm/openmoji-named-svgs@latest/color/sparkling-heart.svg";
+
 export default function SignupPage() {
   return (
-    <main className="flex h-screen items-center justify-center p-5">
-      <div className="flex h-full max-h-[40rem] w-full max-w-[64rem] overflow-hidden rounded-2xl bg-card shadow-2xl">
-        <div className="w-full space-y-10 overflow-y-auto p-10 md:w-1/2">
-          <div className="space-y-1 text-center">
-            <h1 className="text-3xl font-bold">Sign up to codepeers</h1>
-            <p className="text-muted-foreground">
-              A place where <span className="italic">you</span> can find a
-              friend.
-            </p>
-          </div>
-          <div className="space-y-5">
-            <SignupForm />
-            <Link href={"/login"} className="block text-center hover:underline">
-              Already have an account? Log in
-            </Link>
-          </div>
-        </div>
+    <AuthPageLayout
+      variant="purple"
+      bgImageSrc="/signup-image.jpg"
+      panelImageSrc={GLOW_CITY_IMAGE}
+      panelImageAlt="Glow city lights by Madeline Liu on Unsplash"
+      quoteText="Find your code buddy."
+      quoteSubtext="Ship together. Grow together 🚀"
+      kanjiWatermark="友達"
+      formKanji="登録"
+      sparkleIconSrc={HEART_ICON}
+      topLabel="Join CodePeers"
+      title="Sign Up to CodePeers"
+      subtitle={
+        <>
+          A place where <em>you</em> can find a friend 💫
+        </>
+      }
+    >
+      {/* Signup form */}
+      <SignupForm />
 
-        <img
-          src="/3dAnime.jpeg"
-          alt=""
-          className="hidden w-1/2 overflow-hidden rounded-3xl shadow-sm md:block"
-        />
-      </div>
-    </main>
+      {/* Login link */}
+      <p
+        className="text-center text-sm"
+        style={{ color: "rgba(130,150,200,0.65)" }}
+      >
+        Already have an account?{" "}
+        <Link
+          href="/login"
+          className="font-bold underline decoration-[var(--link-underline)] underline-offset-2 transition-opacity hover:opacity-80"
+          style={{
+            background: "var(--link-gradient)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          Log in
+        </Link>
+      </p>
+    </AuthPageLayout>
   );
 }

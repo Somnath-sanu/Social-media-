@@ -1,7 +1,7 @@
 import UserAvatar from "@/components/UserAvatar";
 import { NotificationData } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { NotificationType } from "@prisma/client";
+import { NotificationType } from "@/generated/prisma";
 import { Heart, MessageCircle, User2, AtSign } from "lucide-react";
 import Link from "next/link";
 

@@ -59,10 +59,6 @@ export default function EditProfileDialog({
 
   async function onSubmit(values: UpdateUserProfileValues) {
 
-    console.log({
-      croppedAvatar
-    });
-    
 
     const newAvatarFile = croppedAvatar
       ? new File([croppedAvatar], `avatar_${user.id}.webp`)

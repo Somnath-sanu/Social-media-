@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { UTApi } from "uploadthing/server";
 
+function getUploadThingFileKey(url: string) {
+  return url.split(`/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`)[1];
+}
+
 export async function GET(req: Request) {
   try {
     const authHeader = req.headers.get("Authorization");
@@ -29,12 +33,13 @@ export async function GET(req: Request) {
       },
     });
 
-    new UTApi().deleteFiles(
-      unusedMedia.map(
-        (m) =>
-          m.url.split(`/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`)[1],
-      ),
-    );
+    const fileKeys = unusedMedia
+      .map((m) => getUploadThingFileKey(m.url))
+      .filter(Boolean);
+
+    if (fileKeys.length) {
+      await new UTApi().deleteFiles(fileKeys);
+    }
 
     await prisma.media.deleteMany({
       where: {

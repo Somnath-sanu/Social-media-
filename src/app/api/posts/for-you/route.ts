@@ -20,7 +20,7 @@ import { NextRequest } from "next/server";
 }
 
 In this case, you have to manually check the req.method inside a single function, which is less clean and harder to scale if you want to support multiple methods with different logic.
- */
+*/
 
 export async function GET(req: NextRequest) {
   try {
@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
     return Response.json(data); 
     /**
      *  When you're working with APIs, the data returned to the client needs to be serializable because it must be converted into a format (like JSON) that can be transmitted over the network.
-     */
+    */
   } catch (error) {
     console.log(error);
     return Response.json(

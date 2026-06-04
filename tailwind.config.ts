@@ -19,6 +19,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        outfit: ["var(--font-outfit)", "sans-serif"],
+        nunito: ["var(--font-nunito)", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -68,10 +72,21 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "float-star": {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(-10px) rotate(8deg)" },
+        },
+        "pulse-orb": {
+          "0%, 100%": { opacity: "0.18", transform: "scale(1)" },
+          "50%": { opacity: "0.28", transform: "scale(1.05)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float-star": "float-star 3.5s ease-in-out infinite",
+        "pulse-orb": "pulse-orb 6s ease-in-out infinite",
+        "pulse-orb-delay": "pulse-orb 7s ease-in-out 2s infinite",
       },
     },
   },

@@ -63,9 +63,8 @@ export default function PostEditor() {
   const { onClick, ...rootProps } = getRootProps();
 
   const customPrompt =
-    "You are an AI assistant specialized in computer science and technology. Your role is to answer user questions about computer-related topics, such as programming languages (e.g., MERN stack), cloud computing (e.g., AWS), DevOps practices, computer architecture,data storage , blockchain,etc. Your responses should be informative, concise, and limited to 60-70 words.If the users question is not about these topics or involves personal, sensitive, or inappropriate content, respond with a polite and friendly message indicating that the question is not valid. For example: 'I'm here to help with questions related to computer science and technology. Please ask about topics like programming, cloud computing, or computer systems. For other queries, consider reaching out to the appropriate resources.' Answer any technology questions except the one i already mensioned above . Now just answer the question i am giving you now ->";
+    "You are an intelligent AI assistant for CodePeers, a collaborative developer community platform. Your expertise includes: programming languages (JavaScript, Python, Go, Rust, etc.), full-stack development (MERN, MEAN, etc.), cloud platforms (AWS, Azure, GCP), DevOps & infrastructure (Docker, Kubernetes, CI/CD), databases (SQL, NoSQL, Redis), APIs & microservices, mobile development, security best practices, and emerging tech (AI/ML, blockchain, edge computing). You provide concise, practical, and actionable responses optimized for developer engagement—keep answers under 70 words unless more detail is essential. Format code snippets clearly and link to relevant concepts. For off-topic or inappropriate requests, politely redirect: 'I'm here to help with tech & development topics. Feel free to ask about coding, cloud, DevOps, or architecture challenges!' Respond helpfully and professionally to foster community learning.";
 
-  const imageUrl = `https://image.pollinations.ai/prompt/${outputImg}?model=flux&width=1280&height=720&seed=42&nologo=true&enhance=true`;
 
   const editor = useEditor({
     extensions: [
@@ -191,9 +190,6 @@ export default function PostEditor() {
             setAiQuestion={setAiQuestion}
             setAiContent={setAiContent}
             aiQuestion={aiQuestion}
-            outputImg={outputImg}
-            setOutputImg={setOutputImg}
-            imageUrl={imageUrl}
           >
             <BotMessageSquare className="size-5 cursor-pointer hover:text-neutral-400" />
           </AskAiDialog>
@@ -367,20 +363,20 @@ function AskAiDialog({
   getAIResult: () => void;
   setAiQuestion: Dispatch<SetStateAction<string>>;
   setAiContent: Dispatch<SetStateAction<string>>;
-  outputImg: string | null;
-  setOutputImg: Dispatch<SetStateAction<string | null>>;
-  imageUrl: string;
+  outputImg?: string | null;
+  setOutputImg?: Dispatch<SetStateAction<string | null>>;
+  imageUrl?: string;
 }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="">
         <DialogHeader>
-          <DialogTitle>Ask AI 🤖 OR Generate image 📸</DialogTitle>
-          <DialogDescription>
+          <DialogTitle>Ask AI 🤖</DialogTitle>
+          {/* <DialogDescription>
             Right click,copy image and paste it in the post input to post
             generated image
-          </DialogDescription>
+          </DialogDescription> */}
         </DialogHeader>
         <Copy
           className="size-4 cursor-pointer hover:text-neutral-300"
@@ -395,7 +391,7 @@ function AskAiDialog({
         />
         <div className="flex flex-col items-center gap-4">
           <Textarea
-            placeholder="start with /generate to generate image : )"
+            placeholder="What's on your mind today?"
             value={aiContent || aiQuestion}
             onChange={(e) => setAiQuestion(e.target.value)}
             className="resize-none"
@@ -406,7 +402,7 @@ function AskAiDialog({
           />
           {!!outputImg && (
             <Image
-              src={imageUrl}
+              src={imageUrl || ""}
               alt=""
               width={250}
               height={150}
@@ -420,7 +416,7 @@ function AskAiDialog({
               onClick={() => {
                 setAiContent("");
                 setAiQuestion("");
-                setOutputImg(null);
+                // setOutputImg(null);
               }}
             >
               Ask again
@@ -434,7 +430,7 @@ function AskAiDialog({
               className="min-w-20"
               loading={aiResultPending}
             >
-              Ask AI
+              Go
             </LoadingButton>
           )}
         </div>

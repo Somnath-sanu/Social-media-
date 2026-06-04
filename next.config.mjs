@@ -17,6 +17,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "image.pollinations.ai",
       },
+      {
+        protocol: "https",
+        hostname: "sx0kcpx007.ufs.sh"
+      }
     ],
   },
   rewrites: () => {

@@ -1,5 +1,16 @@
 import { validateRequest } from "@/auth";
+import { Outfit, Nunito } from "next/font/google";
 import { redirect } from "next/navigation";
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  variable: "--font-nunito",
+});
 
 export default async function Layout({
   children,
@@ -10,5 +21,7 @@ export default async function Layout({
 
   if (user) redirect("/");
 
-  return <>{children}</>;
+  return (
+    <div className={`${outfit.variable} ${nunito.variable}`}>{children}</div>
+  );
 }

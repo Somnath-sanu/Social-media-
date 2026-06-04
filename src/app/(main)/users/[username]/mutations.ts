@@ -34,9 +34,9 @@ export function useUpdateProfileMutation() {
       ]);
     },
     onSuccess: async ([updatedUser, uploadResult]) => {
-      // console.log({
-      //   uploadResult,
-      // });
+      console.log({
+        uploadResult,
+      });
       /**
        * uploadResult: [
       {

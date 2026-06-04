@@ -6,9 +6,13 @@ import { UploadThingError, UTApi } from "uploadthing/server";
 
 const f = createUploadthing();
 
+function getUploadThingFileKey(url: string) {
+  return url.split(`/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`)[1];
+}
+
 export const fileRouter = {
   avatar: f({
-    image: { maxFileSize: "512KB" },
+    image: { maxFileSize: "1MB" },
   })
     .middleware(async () => {
       // This code runs on your server before upload
@@ -25,22 +29,20 @@ export const fileRouter = {
       //https://utfs.io/a/sx0kcpx007/6584cd2c-49f3-4446-a616-fb730840ecb4-ufx0du.webp
 
       if (oldAvatarUrl) {
-        const key = oldAvatarUrl.split(
-          `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
-        )[1];
+        const key = getUploadThingFileKey(oldAvatarUrl);
 
-        await new UTApi().deleteFiles(key);
+        if (key) {
+          await new UTApi().deleteFiles(key);
+        }
         //6584cd2c-49f3-4446-a616-fb730840ecb4-ufx0du.webp
         //👆 that is my file key
       }
       //This code RUNS ON YOUR SERVER after upload
-      const newAvatarUrl = file.url.replace(
-        "/f/",
-        `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
-      );
+      //@ts-ignore
+      const newAvatarUrl = file.ufsUrl;
 
       /**
-       * default url file.url is public , can be accessed by anyone , so we have to create our own application based url
+       * UploadThing v7 exposes ufsUrl as the canonical public file URL.
        */
 
       await Promise.all([
@@ -77,10 +79,8 @@ export const fileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       const media = await prisma.media.create({
         data: {
-          url: file.url.replace(
-            "/f/",
-            `/a/${process.env.NEXT_PUBLIC_UPLOADTHING_APP_ID}/`,
-          ),
+          //@ts-ignore
+          url: file.ufsUrl,
           type: file.type.startsWith("image") ? "IMAGE" : "VIDEO",
         },
       });

@@ -9,8 +9,7 @@ import PostMoreButton from "./PostMoreButton";
 import Linkify from "../Linkify";
 import UserTooltip from "../UserTooltip";
 
-import { Media } from "@prisma/client";
-import Image from "next/image";
+import { Media } from "@/generated/prisma";
 import LikeButton from "./LikeButton";
 import BookmarkButton from "./BookmarkButton";
 import { useState } from "react";
@@ -131,15 +130,7 @@ interface MediaPreviewProps {
 
 function MediaPreview({ media }: MediaPreviewProps) {
   if (media.type === "IMAGE") {
-    return (
-      <Image
-        src={media.url}
-        alt="Attachment"
-        width={500}
-        height={500}
-        className="mx-auto size-fit max-h-[30rem] rounded-2xl"
-      />
-    );
+    return <ImageAttachment url={media.url} />;
   }
 
   if (media.type === "VIDEO") {
@@ -155,6 +146,31 @@ function MediaPreview({ media }: MediaPreviewProps) {
   }
 
   return <p className="text-destructive"> Unsupported media type</p>;
+}
+
+interface ImageAttachmentProps {
+  url: string;
+}
+
+function ImageAttachment({ url }: ImageAttachmentProps) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return (
+      <div className="mx-auto flex min-h-40 w-full max-w-xl items-center justify-center rounded-2xl border border-dashed bg-muted p-6 text-center text-sm text-muted-foreground">
+        This image is no longer available.
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={url}
+      alt="Attachment"
+      onError={() => setFailed(true)}
+      className="mx-auto size-fit max-h-[30rem] rounded-2xl"
+    />
+  );
 }
 
 interface CommentButtonProps {
